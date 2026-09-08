@@ -44,7 +44,7 @@ pyinstaller --onefile --windowed --name MakeblockGamepad \
 | 左摇杆 LX/LY | 左摇杆 |
 | 右摇杆 RX/RY | 右摇杆 |
 | 十字键 | DPAD |
-| 1 / 2 / 3 / 4 | A / B / X / Y |
+| 1 / 2 / 3 / 4 | X / Y / A / B |
 | L1 / R1 | LB / RB |
 | L2 / R2 | LT / RT |
 | 左/右摇杆按下 | L3 / R3 |
