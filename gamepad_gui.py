@@ -16,6 +16,13 @@ from tkinter import ttk
 import vgamepad as vg
 from bleak import BleakClient, BleakScanner
 
+try:
+    import pystray
+    from PIL import Image, ImageDraw
+    HAS_TRAY = True
+except ImportError:
+    HAS_TRAY = False
+
 FFE2_UUID = "0000ffe2-0000-1000-8000-00805f9b34fb"
 
 
@@ -218,6 +225,9 @@ class App:
         ttk.Label(root, text="从模式：L1 + 蓝牙键 + R1 长按到红灯闪烁",
                   foreground="gray").pack(side="bottom", pady=6)
 
+        self.tray_icon = None
+        self._quitting = False
+        self._setup_tray()
         self._poll()
 
     def _on_connect(self):
@@ -253,6 +263,43 @@ class App:
             pass
         self.root.after(50, self._poll)
 
+    def _make_icon(self):
+        img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle([2, 2, 62, 62], radius=14, fill=(41, 98, 255, 255))
+        d.ellipse([16, 22, 48, 42], fill=(255, 255, 255, 255))
+        d.rectangle([26, 14, 38, 50], fill=(255, 255, 255, 255))
+        return img
+
+    def _setup_tray(self):
+        if not HAS_TRAY:
+            return
+        menu = pystray.Menu(
+            pystray.MenuItem("显示窗口", self._show_window, default=True),
+            pystray.MenuItem("退出", self._quit),
+        )
+        self.tray_icon = pystray.Icon("makeblock_gamepad", self._make_icon(), "Makeblock 手柄", menu)
+        self.tray_icon.run_detached()
+
+    def _show_window(self, icon=None, item=None):
+        self.root.after(0, self.root.deiconify)
+
+    def _quit(self, icon=None, item=None):
+        self._quitting = True
+        if self.tray_icon:
+            self.tray_icon.stop()
+        self.root.after(0, self._do_quit)
+
+    def _do_quit(self):
+        self.bridge.stop()
+        self.root.destroy()
+
+    def _on_close(self):
+        if HAS_TRAY and self.tray_icon:
+            self.root.withdraw()
+        else:
+            self._do_quit()
+
     def close(self):
         self.bridge.stop()
 
@@ -260,7 +307,7 @@ class App:
 def main():
     root = tk.Tk()
     app = App(root)
-    root.protocol("WM_DELETE_WINDOW", lambda: (app.close(), root.destroy()))
+    root.protocol("WM_DELETE_WINDOW", app._on_close)
     root.mainloop()
 
 
