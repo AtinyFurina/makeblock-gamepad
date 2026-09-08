@@ -73,9 +73,9 @@ def main():
             pad.left_joystick_float(decode_axis(lx), decode_axis(ly, True))
             pad.right_joystick_float(decode_axis(rx), decode_axis(ry, True))
 
-            # L2 / R2 是肩键，映射成模拟扳机
-            pad.left_trigger_float(1.0 if sh & 0x08 else 0.0)
-            pad.right_trigger_float(1.0 if sh & 0x02 else 0.0)
+            # L2 / R2 映射成模拟扳机
+            pad.left_trigger_float(1.0 if sh & 0x04 else 0.0)
+            pad.right_trigger_float(1.0 if sh & 0x01 else 0.0)
 
             cur = set()
             if dp & 0x01:
@@ -94,9 +94,9 @@ def main():
                 cur.add(B.XUSB_GAMEPAD_A)       # 键 3（下）→ A（下）
             if face & 0x04:
                 cur.add(B.XUSB_GAMEPAD_B)       # 键 4（右）→ B（右）
-            if sh & 0x04:
+            if sh & 0x08:
                 cur.add(B.XUSB_GAMEPAD_LEFT_SHOULDER)    # L1
-            if sh & 0x01:
+            if sh & 0x02:
                 cur.add(B.XUSB_GAMEPAD_RIGHT_SHOULDER)   # R1
             if sh & 0x20:
                 cur.add(B.XUSB_GAMEPAD_LEFT_THUMB)       # 左摇杆按下
