@@ -267,7 +267,7 @@ class App:
         style.configure("TCheckbutton", background=c["bg"], foreground=c["fg"])
         style.map("TCheckbutton", background=[("active", c["bg"])])
         style.configure("Horizontal.TProgressbar", background=c["accent"], troughcolor=c["trough"])
-        self._set_titlebar_dark(dark)
+        self.root.after(50, lambda: self._set_titlebar_dark(dark))
 
     def _set_titlebar_dark(self, dark):
         if sys.platform != "win32":
@@ -277,7 +277,7 @@ class App:
             hwnd = ctypes.windll.user32.GetParent(self.root.winfo_id())
             value = ctypes.c_int(1 if dark else 0)
             ctypes.windll.dwmapi.DwmSetWindowAttribute(
-                hwnd, 20, ctypes.byref(value), ctypes.sizeof(value)
+                ctypes.c_void_p(hwnd), 20, ctypes.byref(value), 4
             )
         except Exception:
             pass
