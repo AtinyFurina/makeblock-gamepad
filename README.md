@@ -13,7 +13,7 @@
 3. 安装依赖：
 
    ```bash
-   pip install bleak vgamepad
+   pip install bleak vgamepad pystray pillow
    ```
 
 4. 运行 GUI：
@@ -25,6 +25,10 @@
    （命令行版：`python gamepad_ble.py`）
 
 点「扫描并连接手柄」，拨摇杆/按键，游戏里即出现 Xbox 360 手柄。
+
+## 后台运行
+
+关闭窗口（点 ×）时程序**不会退出**，而是隐藏到系统托盘继续检测输入、映射手柄。托盘图标右键菜单可「显示窗口」或「退出」。
 
 ## 打包成单 exe
 
