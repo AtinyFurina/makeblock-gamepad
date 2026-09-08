@@ -65,7 +65,7 @@ def parse_frame(data):
     return p
 
 
-SHOULDER_NAMES = [(0x01, "R1"), (0x02, "R2"), (0x04, "L1"), (0x08, "L2"),
+SHOULDER_NAMES = [(0x01, "R2"), (0x02, "R1"), (0x04, "L2"), (0x08, "L1"),
                   (0x10, "BT"), (0x20, "L3")]
 FACE_NAMES = [(0x01, "1"), (0x08, "2"), (0x02, "3"), (0x04, "4"), (0x10, "+")]
 DPAD_NAMES = [(0x01, "上"), (0x02, "下"), (0x04, "左"), (0x08, "右"),
@@ -149,8 +149,8 @@ class Bridge:
         if self.pad:
             self.pad.left_joystick_float(decode_axis(lx), decode_axis(ly, True))
             self.pad.right_joystick_float(decode_axis(rx), decode_axis(ry, True))
-            self.pad.left_trigger_float(1.0 if sh & 0x08 else 0.0)
-            self.pad.right_trigger_float(1.0 if sh & 0x02 else 0.0)
+            self.pad.left_trigger_float(1.0 if sh & 0x04 else 0.0)
+            self.pad.right_trigger_float(1.0 if sh & 0x01 else 0.0)
 
             B = vg.XUSB_BUTTON
             cur = set()
@@ -170,9 +170,9 @@ class Bridge:
                 cur.add(B.XUSB_GAMEPAD_A)
             if face & 0x04:
                 cur.add(B.XUSB_GAMEPAD_B)
-            if sh & 0x04:
+            if sh & 0x08:
                 cur.add(B.XUSB_GAMEPAD_LEFT_SHOULDER)
-            if sh & 0x01:
+            if sh & 0x02:
                 cur.add(B.XUSB_GAMEPAD_RIGHT_SHOULDER)
             if sh & 0x20:
                 cur.add(B.XUSB_GAMEPAD_LEFT_THUMB)
