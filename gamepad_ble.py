@@ -87,13 +87,13 @@ def main():
             if dp & 0x08:
                 cur.add(B.XUSB_GAMEPAD_DPAD_RIGHT)
             if face & 0x01:
-                cur.add(B.XUSB_GAMEPAD_A)       # 键 1
+                cur.add(B.XUSB_GAMEPAD_X)       # 键 1（左）→ X（左）
             if face & 0x08:
-                cur.add(B.XUSB_GAMEPAD_B)       # 键 2
+                cur.add(B.XUSB_GAMEPAD_Y)       # 键 2（上）→ Y（上）
             if face & 0x02:
-                cur.add(B.XUSB_GAMEPAD_X)       # 键 3
+                cur.add(B.XUSB_GAMEPAD_A)       # 键 3（下）→ A（下）
             if face & 0x04:
-                cur.add(B.XUSB_GAMEPAD_Y)       # 键 4
+                cur.add(B.XUSB_GAMEPAD_B)       # 键 4（右）→ B（右）
             if sh & 0x04:
                 cur.add(B.XUSB_GAMEPAD_LEFT_SHOULDER)    # L1
             if sh & 0x01:
