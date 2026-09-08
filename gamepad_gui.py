@@ -149,8 +149,8 @@ class Bridge:
         if self.pad:
             self.pad.left_joystick_float(decode_axis(lx), decode_axis(ly, True))
             self.pad.right_joystick_float(decode_axis(rx), decode_axis(ry, True))
-            self.pad.left_trigger_float(1.0 if sh & 0x04 else 0.0)
-            self.pad.right_trigger_float(1.0 if sh & 0x01 else 0.0)
+            self.pad.left_trigger_float(1.0 if sh & 0x08 else 0.0)
+            self.pad.right_trigger_float(1.0 if sh & 0x02 else 0.0)
 
             B = vg.XUSB_BUTTON
             cur = set()
@@ -170,9 +170,9 @@ class Bridge:
                 cur.add(B.XUSB_GAMEPAD_A)
             if face & 0x04:
                 cur.add(B.XUSB_GAMEPAD_B)
-            if sh & 0x08:
+            if sh & 0x04:
                 cur.add(B.XUSB_GAMEPAD_LEFT_SHOULDER)
-            if sh & 0x02:
+            if sh & 0x01:
                 cur.add(B.XUSB_GAMEPAD_RIGHT_SHOULDER)
             if sh & 0x20:
                 cur.add(B.XUSB_GAMEPAD_LEFT_THUMB)
