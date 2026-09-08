@@ -1,2 +1,4 @@
 bleak>=0.22.0
 vgamepad>=0.1.0
+pystray>=0.19.0
+pillow>=10.0.0
