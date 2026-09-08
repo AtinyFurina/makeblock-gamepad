@@ -8,7 +8,9 @@
 """
 
 import asyncio
+import os
 import queue
+import sys
 import threading
 import tkinter as tk
 from tkinter import ttk
@@ -24,6 +26,11 @@ except ImportError:
     HAS_TRAY = False
 
 FFE2_UUID = "0000ffe2-0000-1000-8000-00805f9b34fb"
+
+
+def resource_path(rel):
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, rel)
 
 
 def decode_axis(raw, invert=False):
@@ -264,12 +271,14 @@ class App:
         self.root.after(50, self._poll)
 
     def _make_icon(self):
-        img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-        d = ImageDraw.Draw(img)
-        d.rounded_rectangle([2, 2, 62, 62], radius=14, fill=(41, 98, 255, 255))
-        d.ellipse([16, 22, 48, 42], fill=(255, 255, 255, 255))
-        d.rectangle([26, 14, 38, 50], fill=(255, 255, 255, 255))
-        return img
+        try:
+            return Image.open(resource_path("icon.png")).resize((64, 64), Image.LANCZOS)
+        except Exception:
+            img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+            d = ImageDraw.Draw(img)
+            d.rounded_rectangle([2, 2, 62, 62], radius=14, fill=(41, 98, 255, 255))
+            d.rectangle([26, 14, 38, 50], fill=(255, 255, 255, 255))
+            return img
 
     def _setup_tray(self):
         if not HAS_TRAY:
@@ -307,6 +316,10 @@ class App:
 def main():
     root = tk.Tk()
     app = App(root)
+    try:
+        root.iconbitmap(resource_path("icon.ico"))
+    except Exception:
+        pass
     root.protocol("WM_DELETE_WINDOW", app._on_close)
     root.mainloop()
 
