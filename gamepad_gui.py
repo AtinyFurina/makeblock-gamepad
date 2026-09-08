@@ -139,13 +139,13 @@ class Bridge:
             if dp & 0x08:
                 cur.add(B.XUSB_GAMEPAD_DPAD_RIGHT)
             if face & 0x01:
-                cur.add(B.XUSB_GAMEPAD_A)
-            if face & 0x08:
-                cur.add(B.XUSB_GAMEPAD_B)
-            if face & 0x02:
                 cur.add(B.XUSB_GAMEPAD_X)
-            if face & 0x04:
+            if face & 0x08:
                 cur.add(B.XUSB_GAMEPAD_Y)
+            if face & 0x02:
+                cur.add(B.XUSB_GAMEPAD_A)
+            if face & 0x04:
+                cur.add(B.XUSB_GAMEPAD_B)
             if sh & 0x04:
                 cur.add(B.XUSB_GAMEPAD_LEFT_SHOULDER)
             if sh & 0x01:
