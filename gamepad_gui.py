@@ -33,6 +33,16 @@ def resource_path(rel):
     return os.path.join(base, rel)
 
 
+DARK = {
+    "bg": "#1e1e1e", "fg": "#d4d4d4", "btn": "#3c3c3c", "btn_active": "#505050",
+    "accent": "#007acc", "trough": "#333333",
+}
+LIGHT = {
+    "bg": "#f0f0f0", "fg": "#000000", "btn": "#e1e1e1", "btn_active": "#d0d0d0",
+    "accent": "#007acc", "trough": "#d0d0d0",
+}
+
+
 def decode_axis(raw, invert=False):
     v = 2 * (raw - 128)
     if invert:
@@ -200,10 +210,13 @@ class App:
         self.root = root
         self.q = queue.Queue()
         self.bridge = Bridge(self.q)
+        self.dark = True
 
         root.title("Makeblock 手柄 → Xbox 手柄")
         root.geometry("440x400")
         root.resizable(False, False)
+
+        self._apply_theme(self.dark)
 
         self.status_var = tk.StringVar(value="未连接（请切手柄到从模式）")
         ttk.Label(root, textvariable=self.status_var, font=("", 11)).pack(pady=10)
@@ -229,13 +242,35 @@ class App:
         ttk.Label(btn_frame, textvariable=self.buttons_var, wraplength=400,
                   justify="left").pack(anchor="nw", padx=8, pady=8)
 
-        ttk.Label(root, text="从模式：L1 + 蓝牙键 + R1 长按到红灯闪烁",
-                  foreground="gray").pack(side="bottom", pady=6)
+        self.dark_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(root, text="暗色模式", variable=self.dark_var,
+                        command=self._toggle_theme).pack(side="bottom", pady=2)
+        ttk.Label(root, text="从模式：L1 + 蓝牙键 + R1 长按到红灯闪烁").pack(side="bottom", pady=6)
 
         self.tray_icon = None
         self._quitting = False
         self._setup_tray()
         self._poll()
+
+    def _apply_theme(self, dark):
+        c = DARK if dark else LIGHT
+        self.root.configure(bg=c["bg"])
+        style = ttk.Style()
+        style.theme_use("clam")
+        style.configure(".", background=c["bg"], foreground=c["fg"])
+        style.configure("TFrame", background=c["bg"])
+        style.configure("TLabel", background=c["bg"], foreground=c["fg"])
+        style.configure("TLabelframe", background=c["bg"], foreground=c["fg"])
+        style.configure("TLabelframe.Label", background=c["bg"], foreground=c["fg"])
+        style.configure("TButton", background=c["btn"], foreground=c["fg"])
+        style.map("TButton", background=[("active", c["btn_active"]), ("disabled", c["btn"])])
+        style.configure("TCheckbutton", background=c["bg"], foreground=c["fg"])
+        style.map("TCheckbutton", background=[("active", c["bg"])])
+        style.configure("Horizontal.TProgressbar", background=c["accent"], troughcolor=c["trough"])
+
+    def _toggle_theme(self):
+        self.dark = bool(self.dark_var.get())
+        self._apply_theme(self.dark)
 
     def _on_connect(self):
         self.btn.config(state="disabled")
